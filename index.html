@@ -1,0 +1,766 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Fair Map</title>
+    <!-- <script src="/static/js/colors.js"></script> -->
+    <script src="https://static.stiblook.rocks/bundled/button.js"></script>
+    <script src="https://static.stiblook.rocks/bundled/icon.js"></script>
+    <script src="https://static.stiblook.rocks/bundled/card.js"></script>
+    <script src="https://static.stiblook.rocks/bundled/iconbutton.js"></script>
+    <script src="https://static.stiblook.rocks/bundled/layout-grid.js"></script>
+    <script src="https://static.stiblook.rocks/bundled/textfield.js"></script>
+    <link rel="stylesheet" href="/static/css/theme.css">
+    <link rel="stylesheet" href="/static/css/colors.module.css">
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/typography.module.css">
+    <link rel="stylesheet" href="/static/css/fonts.css">
+    <link rel="stylesheet" href="/static/css/topappbar.css">
+    <link rel="stylesheet" href="/static/css/card.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
+    <script>
+        window.onload = function () {
+            var topappbar = document.getElementById("topappbar");
+            // var avatar = document.getElementById("avatar");
+            fixtopappbar()
+        };
+        function fixtopappbar() {
+            if (window.scrollY > 0) {
+                fixTopAppBar()
+            } else {
+                resetTopAppBar()
+            }
+        };
+
+        function fixTopAppBar() {
+            topappbar.classList.add('topappbar__fixed')
+        }
+        function fixToolbarAbDivider() {
+            tAbDivider.style.position = 'fixed'
+            tAbDivider.style.top = '56px'
+            tAbDivider.style.zIndex = 100000
+            tAbDivider.style.width = '100%'
+        }
+        function fixAvatar() {
+            avatar.style.position = 'fixed'
+            avatar.style.right = '16px'
+            avatar.style.zIndex = 100000
+        }
+
+        function resetTopAppBar() {
+            topappbar.style.position = 'static'
+            topappbar.removeAttribute('style')
+            topappbar.classList.remove('topappbar__fixed')
+        }
+
+        function resetToolbarAbDivider() {
+            tAbDivider.style.position = 'static'
+            tAbDivider.removeAttribute('style')
+        }
+
+        function resetAvatar() {
+            avatar.style.position = 'static'
+            avatar.removeAttribute('style')
+        }
+        window.addEventListener('scroll', fixtopappbar);
+    </script>
+</head>
+<style>
+    :root {
+        background-color: --md-sys-color-background;
+    }
+
+    body {
+        margin: 0px;
+    }
+
+    .content {
+        margin: 8px;
+    }
+
+    .card__secondary {
+        box-sizing: border-box;
+        max-width: 100%;
+        overflow: scroll;
+        overflow-x: auto;
+        overflow-y: auto;
+    }
+
+    .card {
+        width: 100%;
+    }
+
+    .main-grid {
+        width: 100%;
+    }
+</style>
+
+<body class="background">
+    <div class="topappbar surface" id="topappbar" name="topappbar">
+        <div class="topappbar__row">
+            <section class="topappbar__section topappbar__section--align-start">
+            </section>
+            <section class="topappbar__section topappbar__section--align-center">
+                <span class="topappbar__title title-large on-background-text" style="font-size: x-large;">Welcome to
+                    Career Fair 2023</span>
+            </section>
+            <section class="topappbar__section topappbar__section--align-end">
+            </section>
+        </div>
+    </div>
+    <style>
+        .mapc {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            z-index: 100000;
+            position: fixed;
+            display: none;
+            /* margin: 20%; */
+            bottom: 10%;
+            top: 6%;
+            right: 10%;
+            left: 10%;
+            /* padding: 30px; */
+        }
+
+        .close-button {
+            position: absolute;
+            color: black;
+            right: 10%;
+            top: 2rem;
+            padding: 0 1rem;
+            cursor: pointer;
+        }
+
+        #map {
+            width: 80vw;
+            padding: 10px;
+            background-color: var(--md-sys-color-surface);
+        }
+    </style>
+    <script>
+        function openMap(imgURL) {
+            console.log(imgURL)
+            var imgcontainer = document.getElementById("map-container");
+            var img = document.getElementById("map");
+            img.src = imgURL;
+            imgcontainer.style.display = "block";
+        }
+        function closeMap() {
+            var imgcontainer = document.getElementById("map-container");
+            imgcontainer.style.display = "none";
+        }
+    </script>
+    <style>
+        .search-bar {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            margin: 8px;
+            width: 100%;
+            --md-outlined-text-field-container-shape: 28px;
+        }
+
+        md-outlined-text-field {
+            width: 100%;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+    </style>
+    <script>
+        //implement search logic
+        window.onload = function () {
+            document.addEventListener("keydown", function () {
+                var x = event.keyCode || event.which;
+                if (x == 27) {
+                    var y = document.getElementById("map-container");
+                    if (y.style.display === "block") {
+                        y.style.display = "none";
+                    }
+                }
+            });
+
+            searchbar = document.getElementById("search-textfield")
+            searchbar.onkeyup = function () { search(searchbar.value) }
+            // searchbar.onchange=function () {search(searchbar.value)}
+            function search(string) {
+                document.getElementById("no-colleges").style.display = "none"
+                cards = document.getElementsByClassName("card")
+                // console.log(cards)
+                // iterate over cards
+                for (let i = 0; i < cards.length; i++) {
+                    element = cards[i]
+                    if (element.id.toLowerCase().includes(string.toLowerCase())) {
+                        element.style.display = "block"
+                    } else {
+                        element.style.display = "none"
+                    };
+                }
+                // Check if no cards are visible
+                var visible = false
+                for (let i = 0; i < cards.length; i++) {
+                    element = cards[i]
+                    if (element.style.display == "block") {
+                        visible = true
+                    };
+                }
+                if (!visible) {
+                    console.log("No colleges by such name found.")
+                    for (let i = 0; i < cards.length; i++) {
+                        element = cards[i]
+                        if (element.innerText.toLowerCase().includes(string.toLowerCase())) {
+                            element.style.display = "block"
+                        } else {
+                            element.style.display = "none"
+                        };
+                    }
+                }
+                var visible = false
+                for (let i = 0; i < cards.length; i++) {
+                    element = cards[i]
+                    if (element.style.display == "block") {
+                        visible = true
+                    };
+                }
+                if (!visible) {
+                    console.log("No colleges found.")
+                    document.getElementById("no-colleges").style.display = "block"
+                }
+            }
+        }
+    </script>
+    <div id="map-container" class="mapc">
+        <img id="map" src="" alt="Map">
+        <md-icon-button class="close-button" onclick="closeMap()"><md-icon>close</md-icon></md-icon-button>
+    </div>
+    <main class="content on-background-text">
+        <div class="search-bar">
+            <md-outlined-text-field type="search" id="search-textfield" class="search-textfield"
+                label="Search"></md-outlined-text-field>
+        </div>
+        <p style="font-size: 100px; display: none; margin-top: 16%; margin-left: 20%; margin-right: 20%"
+            id="no-colleges" class="headline-large">
+            No results! Try searching again with a fewer words.
+        </p>
+        <md-layout-grid class="main-grid">
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/3C.png')"
+                id="academyofpastryandculinary">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/apca-logo.png"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">Academy of Pastry and Culinary</div>
+                        <div class="card__subtitle">Mumbai, India</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/apca.jpg" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        APCA is an esteemed group of Professional Culinary & Pastry Schools with Pan- Asia presence in
+                        Malaysia, Philippines, Indonesia, Singapore, Delhi NCR, Mumbai and Bangalore. Their journey
+                        started in 2010 with the flagship school in Malaysia and now, the company is growing
+                        exponentially with plans to be in Thailand & Dubai soon.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/2D.png')" id="Ahemdabad University">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/ahduni-logo.png" />
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">Ahemdabad University</div>
+                        <div class="card__subtitle">Ahmedabad, India</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/ahduni.jpg" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        Ahemdabad University is a private university located in Ahmedabad, Gujarat, India. It was
+                        founded in 1997 by the Ahmedabad Education Society. The university offers undergraduate,
+                        postgraduate and doctoral programs in a variety of disciplines, including engineering,
+                        management, law, arts, and sciences.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/2E.png')" id="AITS">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/aits-logo.png"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">AITS University</div>
+                        <div class="card__subtitle">Andhra Pradesh, India</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/aits.jpeg" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        This is an autonomous engineering college in Andhra Pradesh. It was founded in 1998 and offers
+                        undergraduate and graduate programs in engineering, computer science, and business
+                        administration. The college has a strong academic reputation and its graduates are well-placed
+                        in the job market.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/3A.png')"
+                id="Ajeenkya DY Patil University">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/ajeenkya-logo.png"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">Ajeenkya DY Patil University</div>
+                        <div class="card__subtitle">Pune, Maharasthra</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/ajeenkya.jpeg" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        Ajeenkya DY Patil University offers the best undergraduate and postgraduate programs in unique
+                        areas, linked to exemplary ‘ADYPU Student Experience’, which is supported by excellent
+                        facilities and highly motivated teaching staff.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/1D.png')" id="Alliance University">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/alliance-logo.png"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">Alliance University</div>
+                        <div class="card__subtitle">Anekal, Karnataka</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/alliance.jpeg" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        Alliance University was founded with an ambition to serve society with education and research
+                        and promote a global outlook that defines the future trajectory of its students.
+
+                        Since its inception in 2010, Alliance University has been a forerunner in higher education,
+                        calling out to the new generation of scholars, engineers, scientists, artists, people in
+                        business, social reformers helping to shape and transform societies and communities through and
+                        beyond, around the world.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/4A.png')"
+                id="American University of Antigua">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/mitwpu-logo.png"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">MIT World Peace University</div>
+                        <div class="card__subtitle">Pune, Maharasthra</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/mitwpu.png" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        With a rich legacy of 40 years in fostering world-class academic excellence and over 100,000
+                        alumni across the globe, MIT-WPU is one of the premier institutions of higher learning in India
+                        offering Undergraduate, Postgraduate, Diploma, and Ph.D. programmes.
+
+                        It offers the highest standard of professional education ingrained with the postulates of peace
+                        studies, MIT-WPU enables an inclusive culture of dignity, fairness, and respect amongst its
+                        students, grooming them into future-ready, responsible citizens of the world.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/3A.png')"
+                id="Anglo Eastern Maritime Academy">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/aema-logo.png"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">Anglo Eastern Maritime Academy</div>
+                        <div class="card__subtitle">New Delhi, India</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/aema.jpeg" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        AMEA's vision is to be recognised as a leading, innovative, dedicated, and practical education
+                        provider in the maritime industry.
+                        They want to educate and train to the highest standards in the maritime industry,
+                        make learning enjoyable and effective in the workplace.
+
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/Prep - C.png')"
+                id="Arizona State University, United States">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/asu-logo.png"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">Arizona State University</div>
+                        <div class="card__subtitle">Tempe, Arizona, USA</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/asu.jpeg" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        Two decades ago, Arizona State University set forth a new and ambitious trajectory to become a
+                        comprehensive knowledge enterprise dedicated to the simultaneous pursuit of excellence, broad
+                        access to quality education and meaningful societal impact. From that point forward, all of its
+                        energy, creativity and resources have been brought to bear on the design of a uniquely adaptive
+                        and transdisciplinary university committed to producing master learners. Today, ASU exemplifies
+                        a new prototype for the American public research university.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/4B.png')" id="Ashoka University">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/ashoka-logo.jpeg"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">Ashoka University</div>
+                        <div class="card__subtitle">Haryana</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/ashoka.avif" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        Ashoka University’s Liberal Arts and Sciences education enables critical thinking, complex
+                        problem solving, effective communication, teamwork, and innovation for impact and change.
+
+                        The Ashoka University education provides students with foundational knowledge and disciplinary
+                        depth while encouraging them to find unexplored connections across disciplines, leading to
+                        innovative outcomes. It trains them to do their own in-depth thinking after understanding an
+                        issue from multiple viewpoints and perspectives. It orients them towards asking the right
+                        questions instead of accepting obvious answers. It combines the qualitative with the
+                        quantitative, recognising that every avenue or venture in life has a human context apart from a
+                        technical or financial one.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/Prep - D.png')" id="Atlas Skill Tech">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/ast-logo.jpeg"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">Atlas Skill Tech</div>
+                        <div class="card__subtitle">Mumbai, Maharasthra</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/ast.png" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        ATLAS SkillTech University is India’s first new-age urban multidisciplinary university. Founded
+                        to forge a path to the future, ATLAS is where the confluence of design, technology, strategy,
+                        and leadership takes place. We believe in breaking paths and conventions. We are constantly
+                        defining, shaping, and redefining the future of education in India right here in the heart of an
+                        ever-booming, cosmopolitan, and enterprising Mumbai.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/4C.png')" id="Atria University">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/atria-logo.png"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">Atria University</div>
+                        <div class="card__subtitle">Bangalore, Karnataka</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/atria.webp" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        Atria University, Bengaluru, aims to address the challenges of tomorrow by preparing students
+                        for careers and opportunities in the future. The University was founded in 2018 by the Atria
+                        Group – a reputed South Indian conglomerate, which manages Atria Education, and The University’s
+                        unique model of higher education aims to empower Beyonders who can build sustainable global
+                        communities. And, propel businesses and societies to flourish and thrive.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/Prep - C.png')"
+                id="Azim Premji University">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/azim-logo.png"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">Azim Premji University</div>
+                        <div class="card__subtitle">Bangalore, Karnataka</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/azim.jpeg" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        We believe that education can and should contribute to human development and well-being. Over
+                        the years, we have nurtured a community of individuals motivated by the values enshrined in the
+                        Indian constitution: a commitment to social justice, equity, humane values and sustainability.
+
+                        We believe that higher education can create critical and reflective practitioners with an
+                        understanding of the social impact of education, the law and development.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/1C.png')" id="BITS Law School">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/bits-logo.png"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">BITS Law School</div>
+                        <div class="card__subtitle">Mumbai, Maharasthra</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/bits.jpeg" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        BITS Law School offers legal knowledge, practical training, and holistic education to build
+                        leaders who will be passionate to create a more fair, just, and inclusive society. Towards this
+                        goal, we embrace all learners who bring the right ethos, a penchant for learning the law, and
+                        who share our belief in bending the arc of the moral universe towards justice. Our progressive,
+                        interdisciplinary, and technology-led approach will help students learn to know the law, learn
+                        to practice law, learn to live with law, and learn to empower through law.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/2C.png')"
+                id="Blue Mountains International Hotel Management School">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/bluemts-logo.jpeg"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">Blue Mountains International Hotel Management School</div>
+                        <div class="card__subtitle">Leura, Australia</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/bluemts.jpeg" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        BITS Law School offers legal knowledge, practical training, and holistic education to build
+                        leaders who will be passionate to create a more fair, just, and inclusive society. Towards this
+                        goal, we embrace all learners who bring the right ethos, a penchant for learning the law, and
+                        who share our belief in bending the arc of the moral universe towards justice. Our progressive,
+                        interdisciplinary, and technology-led approach will help students learn to know the law, learn
+                        to practice law, learn to live with law, and learn to empower through law.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/3A.png')"
+                id="Blue Mountains International Hotel Management School">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/bluemts-logo.jpeg"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">Blue Mountains International Hotel Management School</div>
+                        <div class="card__subtitle">Leura, Australia</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/bluemts.jpeg" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        BITS Law School offers legal knowledge, practical training, and holistic education to build
+                        leaders who will be passionate to create a more fair, just, and inclusive society. Towards this
+                        goal, we embrace all learners who bring the right ethos, a penchant for learning the law, and
+                        who share our belief in bending the arc of the moral universe towards justice. Our progressive,
+                        interdisciplinary, and technology-led approach will help students learn to know the law, learn
+                        to practice law, learn to live with law, and learn to empower through law.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/3A.png')" id="BML Munjal University">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/bml-logo.png"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">BML Munjal University</div>
+                        <div class="card__subtitle">Kapriwas, Haryana, India</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/bml.jpeg" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        BML Munjal University is engaged in creating, preserving and imparting internationally
+                        benchmarked knowledge and skills to a diverse community of students from across the world. BMU’s
+                        aim is to nurture ethical leaders who are skilled, knowledgeable and have the life skills needed
+                        to lead organisations to success. BMU seeks to transform higher education in India by creating a
+                        world-class and innovative teaching, learning and research environment. Founded by the Hero
+                        Group, BMU is a not-for-profit initiative offering undergraduate and post-graduate courses.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/Prep - A.png')"
+                id="Cardiff University">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/cardiff-logo.png"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">Cardiff University</div>
+                        <div class="card__subtitle">Cardiff, Wales</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/cardiff.jpeg" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        Founded in 1883, Cardiff University is established as one of Britain's leading research
+                        universities. We excel in producing high quality, innovative research which translates into
+                        benefits both locally and worldwide.
+
+                        We have a diverse student population with students coming from more than 100 countries and with
+                        a range of backgrounds. Our academic staff are driven by creativity and curiosity and many are
+                        leaders in their fields, creating a stimulating environment for learning.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/Prep - C.png')"
+                id="Colorado State University US">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/colorado-logo.png"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">Colorado State University</div>
+                        <div class="card__subtitle">Colorado, United States</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/colorado.jpeg" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        Each day, Colorado State University sets out to dedicate every resource, every brilliant mind,
+                        every amazing idea to the goal of making life better for everyone. We explore, we innovate, we
+                        create solutions and pathways that are brand new.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/1A.png')" id="Culinary Arts Academy">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/culinary-logo.png"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">Culinary Arts Academy</div>
+                        <div class="card__subtitle">Switzerland</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/culinary.jpeg" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        At Culinary Arts Academy Switzerland, you don’t just get a world-class education – you also get
+                        the qualifications to back it up. Our courses are run in partnership with both academic and
+                        industry partners, meaning you’ll finish your education with diplomas that are highly regarded
+                        and professionally recognized in any kitchen around the world.
+                        We are regarded as Switzerland's best culinary schools and one of the world's finest thanks to
+                        our comprehensive curriculum that blends a top-rated culinary arts education with practical
+                        business theory. Nurture your talent, feed your curiosity, and build the strong foundations to
+                        succeed in the world of culinary arts.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/1E.png')" id="EDHEC Business School">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/edhec-logo.jpeg"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">EDHEC Business School</div>
+                        <div class="card__subtitle">France</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/edhec.jpeg" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        EDHEC Business School was founded in the early 20th century by industrialists in northern
+                        France. True to the humanist vision already driving the School’s founders in 1906, EDHEC’s
+                        ongoing is to place business at the service of society. A commitment that the School is
+                        furthering today through the implementation of an ambitious strategic plan for the 2020-2025
+                        period, built for the benefit of future generations. Underpinned by outstanding teaching and
+                        privileged links with the business world, EDHEC ranks among the top 10 business schools in
+                        Europe. We are recognised for our internationalised outlook and approach, our high-quality
+                        teaching faculty and our ability to appropriate contemporary subjects like digital, sustainable
+                        finance and law. Operating as a higher education institution with a not-for-profit status, EDHEC
+                        is administered by various governance bodies intent on preserving our identity and ensuring our
+                        prosperity.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/1A.png')"
+                id="EHL Hospitality, Switzerland">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/ehl-logo.png"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">EHL Hospitality</div>
+                        <div class="card__subtitle">Switzerland</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/ehl.webp" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        EHL Hospitality Business School, formerly known as École hôtelière de Lausanne is a hospitality
+                        management school in Switzerland. The school is consistently regarded as the best hospitality
+                        school in the world. It trains students whose goals are to obtain managerial careers in the
+                        hotel and hospitality industries.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/3C.png')" id="Flame University">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/gd-logo.png"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">GD Goenka University</div>
+                        <div class="card__subtitle">Gurugram, Haryana</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/gd.jpeg" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        At GD Goenka University, excellence is what we strive to achieve. Our infrastructure, faculty,
+                        vision, ideals and teaching methods make us a premier University in Gurgaon. Our University in
+                        Delhi NCR, allows you to delve into a plethora of courses that are available across the website.
+                        You can check out our graduate and post-graduate programs. Besides, as the top-ranking
+                        University in Gurgaon, we have the best teaching faculties that help you walk the path of
+                        success.
+                    </p>
+                </div>
+            </md-filled-card>
+            <md-filled-card class="card" clickable onclick="openMap('/static/imgs/Prep - F.png')" id="GBS">
+                <div class="card__header">
+                    <div class="card-thumbnail">
+                        <img slot="thumbnail" class="card__thumbnail-image" src="/static/imgs/gbs-logo.png"></img>
+                    </div>
+                    <div class="card__header-text">
+                        <div class="card__title">Global Business Studies (GBS)</div>
+                        <div class="card__subtitle">Dubai</div>
+                    </div>
+                </div>
+                <img src="/static/imgs/gbs.png" alt="Background photo" class="card__media" />
+                <div class="card__secondary body-medium">
+                    <p>
+                        GBS is a higher education provider specialising in a range of sector-relevant courses, leading
+                        to globally-renowned qualifications at campuses in Dubai, the United Kingdom and Malta. Our
+                        partnerships with leading higher education providers enable us to deliver vocational,
+                        undergraduate and postgraduate programmes in banking, finance, accounting, business, tourism,
+                        healthcare – and more.
+                    </p>
+                </div>
+            </md-filled-card>
+        </md-layout-grid>
+    </main>
+</body>
+
+</html>

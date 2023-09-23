@@ -1,0 +1,132 @@
+.topappbar {
+    background-color: var('--md-sys-color-surface');
+    --md-elevation-level: 2;
+    /* overflow: hidden; */
+    padding-left: 16px;
+    padding-right: 16px;
+    height: 56px;
+    animation-name: unscroll;
+    animation-duration: .2s;
+    background-color: var('--md-sys-color-surface-variant');
+    -webkit-animation-fill-mode: forwards; /* Chrome 16+, Safari 4+ */
+    -moz-animation-fill-mode: forwards;    /* FF 5+ */
+    -o-animation-fill-mode: forwards;      /* Not implemented yet */
+    -ms-animation-fill-mode: forwards;     /* IE 10+ */
+    animation-fill-mode: forwards;       /* When the spec is finished */
+}
+.topappbar__nav {
+    animation-name: scroll;
+    animation-duration: .2s;
+    transition:all 1s ease;
+    -webkit-animation-fill-mode: forwards; /* Chrome 16+, Safari 4+ */
+    -moz-animation-fill-mode: forwards;    /* FF 5+ */
+    -o-animation-fill-mode: forwards;      /* Not implemented yet */
+    -ms-animation-fill-mode: forwards;     /* IE 10+ */
+    animation-fill-mode: forwards;       /* When the spec is finished */
+}
+.topappbar__fixed {
+    animation-name: scroll;
+    animation-duration: .2s;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 13;
+    transition:all 1s ease;
+    background-color: var('--md-sys-color-surface-variant');
+    -webkit-animation-fill-mode: forwards; /* Chrome 16+, Safari 4+ */
+    -moz-animation-fill-mode: forwards;    /* FF 5+ */
+    -o-animation-fill-mode: forwards;      /* Not implemented yet */
+    -ms-animation-fill-mode: forwards;     /* IE 10+ */
+    animation-fill-mode: forwards;       /* When the spec is finished */
+}
+
+@keyframes scroll {
+    from {background-color: var(--md-sys-color-surface)}
+    to {background-color: var(--md-sys-color-surface-variant)}
+}
+@keyframes unscroll {
+    from {background-color: var(--md-sys-color-surface-variant)}
+    to {background-color: var(--md-sys-color-surface)}
+}
+.sticky + .content {
+    padding-top: 102px;
+  }
+
+.topappbar__title {
+    color: var('--md-sys-color-on-surface');
+    font-family: var('--md-sys-typescale-title-large-font-family-name');
+    font-style: var('--md-sys-typescale-title-large-font-family-style');
+    font-weight: var('--md-sys-typescale-title-large-font-weight');
+    font-size: var('--md-sys-typescale-title-large-font-size');
+    letter-spacing: var('--md-sys-typescale-title-large-tracking');
+    line-height: var('--md-sys-typescale-title-large-height');
+    text-transform: var('--md-sys-typescale-title-large-text-transform');
+    text-decoration: var('--md-sys-typescale-title-large-text-decoration');
+}
+.topappbar__avatar-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 48px;
+    height: 48px;
+}
+.topappbar__avatar {
+    border-radius: 15px;
+    height: 30px;
+    width: 30px;
+    font-size: 24px;
+    margin-right: 16px;
+    cursor: pointer;
+}
+
+.topappbar__row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 56px;
+    width: 100%;
+    /* padding: 0 16px; */
+}
+
+.topappbar__section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.topappbar__navigation-icon {
+    color: var('--md-sys-color-on-surface');
+    cursor: pointer;
+    font-size: 24px;
+    margin-right: 16px;
+}
+
+.topappbar__section--align-start {
+    justify-content: flex-start;
+}
+
+.topappbar__section--align-end {
+    justify-content: flex-end;
+}
+
+.topappbar__section--align-center {
+    justify-content: center;
+}
+
+.topappbar__action-item {
+    color: var('--md-sys-color-on-surface');
+    cursor: pointer;
+    font-size: 24px;
+    margin-left: 16px;
+}
+
+.topappbar.bottom {
+    position: absolute;
+    bottom: 0;
+}
+
+.topappbar.top {
+    position: fixed;
+    top: 0;
+}

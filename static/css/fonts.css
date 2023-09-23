@@ -1,0 +1,8 @@
+@font-face {
+    font-family: "Roboto";
+    src: url("/static/fonts/regular.woff2");
+}
+@font-face {
+    font-family: "monospace";
+    src: url("/static/fonts/mono.woff2");
+}
