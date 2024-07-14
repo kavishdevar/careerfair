@@ -17,7 +17,6 @@
     <script>
         window.onload = function () {
             var topappbar = document.getElementById("topappbar");
-            // var avatar = document.getElementById("avatar");
             fixtopappbar()
         };
         function fixtopappbar() {
@@ -37,12 +36,6 @@
             tAbDivider.style.zIndex = 100000
             tAbDivider.style.width = '100%'
         }
-        function fixAvatar() {
-            avatar.style.position = 'fixed'
-            avatar.style.right = '16px'
-            avatar.style.zIndex = 100000
-        }
-
         function resetTopAppBar() {
             topappbar.style.position = 'static'
             topappbar.removeAttribute('style')
@@ -54,10 +47,6 @@
             tAbDivider.removeAttribute('style')
         }
 
-        function resetAvatar() {
-            avatar.style.position = 'static'
-            avatar.removeAttribute('style')
-        }
         window.addEventListener('scroll', fixtopappbar);
     </script>
 </head>
